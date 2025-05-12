@@ -1,0 +1,37 @@
+class DSU {
+ 
+    public:
+        vector <int> par;
+        vector<vector<int>> group;
+        DSU(int __N) {
+            par.resize(__N + 1);
+            group.resize(__N + 1);
+            for(int i = 0; i <= __N; i++) {
+                group[i].push_back(i);
+                par[i] = i;
+            }
+        }
+        
+        int find(int u) {
+            if(par[u] == u) return u;
+            return par[u] = find(par[u]);
+        }
+        
+        bool unite(int s, int t) {
+            t = find(t), s = find(s);
+        
+            if(s == t) return false;
+            if(group[t].size() < group[s].size())
+                swap(t, s);
+        
+            for(auto i: group[s])
+                group[t].push_back(i);
+        
+            group[s].clear();
+            par[s] = t;
+        
+            return true;
+        }
+        
+    };
+    
