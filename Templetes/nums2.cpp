@@ -56,6 +56,6 @@ inline long long nPr(int n, int r) {
     return modMul(fact[n], invFact[n - r]);
 }
 
-inline long long catolanNumber(int n){
+inline long long catalanNumber(int n){
     return nCr(2 * n, n) / (n + 1);
 }
