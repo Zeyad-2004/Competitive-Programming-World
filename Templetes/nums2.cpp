@@ -55,3 +55,7 @@ inline long long nPr(int n, int r) {
     if (r > n || r < 0) return 0;
     return modMul(fact[n], invFact[n - r]);
 }
+
+inline long long catolanNumber(int n){
+    return nCr(2 * n, n) / (n + 1);
+}
