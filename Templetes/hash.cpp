@@ -44,10 +44,33 @@ struct Hash {
     pair<int, int> getHashVal() {
         return prefixHash.back();
     }
-    pair<int, int> getRangeHashVal(int l, int r) {
+    pair<int, int> getRangeHashVal(int l, int r) { // 0-based
+        if(r < l) return {0, 0};
+
         return {
                 mul(add(prefixHash[r].F, -(l ? prefixHash[l - 1].F : 0)), inv1[l]),
                 mul(add(prefixHash[r].S, -(l ? prefixHash[l - 1].S : 0)), inv2[l])
+        };
+    }
+    pair<int, int> getHashValWithoutRange(int l, int r){ // 0-based
+        if(r < l) return getHashVal();
+
+        auto rem = getRangeHashVal(l, r);
+        auto hash = getHashVal();
+
+        return{
+            add(hash.F, -mul(rem.F, fastPower(P1, l))),
+            add(hash.S, -mul(rem.S, fastPower(P2, l)))
+        };
+    }
+    pair<int, int> addRangeFromMeToAnotherHash(pair<int, int> secondHash, int l, int r){ // 0-based
+        if(r < l) return secondHash;
+
+        auto over = getRangeHashVal(l, r);
+
+        return{
+            add(secondHash.F, mul(over.F, fastPower(P1, l))),
+            add(secondHash.S, mul(over.S, fastPower(P2, l)))
         };
     }
 };
