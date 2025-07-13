@@ -16,6 +16,11 @@ using namespace std;
         cout << z[i] << ' ';                                   \
     cout << endl;
 
+#define pii pair<int, int>
+#define vi vector<int>
+#define vvi vector<vector<int>>
+#define vpii vector<pair<int, int>>
+
 #define F first
 #define S second
 #define int ll
