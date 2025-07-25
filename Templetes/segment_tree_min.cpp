@@ -61,4 +61,35 @@ struct segmentTree{
     long long mn(int l, int r){
         return mn(l, r, 0, 0, size);
     }
+
+    // Use it to get the first index that is smaller than v in the range [l, r) ___ (V not included)
+    // Make sure that segmentTree built with min operation
+    void getFirstIndexSmallerThan_V_Between_L_R(int v, int l, int r, int x, int lx, int rx, int &ans){
+        if(~ans || values[x] > v) return;
+        if(l >= rx || lx >= r) return;
+        if(rx - lx == 1){
+            if(values[x] < v) ans = lx; // Make "<" --> "<=" if you want to include the value v
+
+            return;
+        }
+
+        int mid = (rx + lx) / 2;
+
+        // Make "<" --> "<=" if you want to include the value v
+        if(values[2 * x + 1] < v){
+            getFirstIndexSmallerThan_V_Between_L_R(v, l, r, 2 * x + 1, lx, mid, ans);
+        }
+
+        // Make "<" --> "<=" if you want to include the value v
+        if(values[2 * x + 2] < v && !~ans){
+            getFirstIndexSmallerThan_V_Between_L_R(v, l, r, 2 * x + 2, mid, rx, ans);
+        }
+
+    }
+
+    long long getFirstIndexSmallerThan_V_Between_L_R(int v, int l, int r){
+        int ans = -1;
+        getFirstIndexSmallerThan_V_Between_L_R(v, l, r, 0, 0, size, ans);
+        return ans;
+    }
 };
