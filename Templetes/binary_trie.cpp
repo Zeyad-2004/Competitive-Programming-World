@@ -1,45 +1,92 @@
-struct BinaryTrie{
-    struct Node{
-        Node *child[2];
-        int frq[2];
-        Node(){
-            child[0]=child[1]=0;
-            frq[0]=frq[1]=0;
+template<int Log = 62>
+class trie_xor {
+    struct node {
+        int cnt{};
+        node* mp[2]{};
+    } *root = new node;
+
+    void clear(node* x) {
+        if (!x) return;
+        for (auto& i : x->mp) clear(i);
+        delete x;
+    }
+
+public:
+//    ~trie_xor() { clear(root); }
+
+    // Insert number `num` with count `c` (default = 1)
+    void add(int num, int c = 1) {
+        node* x = root;
+        for (int i = Log; i >= 0; --i) {
+            x->cnt += c;
+            bool b = (num >> i) & 1LL;
+            if (!x->mp[b]) x->mp[b] = new node;
+            x = x->mp[b];
         }
-    };
-    Node *root=new Node();
-    void insert(int n)
-    {
-        Node *cur=root;
-        for(int i=29;i>=0;i--)
-        {
-            bool idx=(n>>i)&1;
-            if(cur->child[idx]==0) cur->child[idx]=new Node();
-            cur->frq[idx]++;
-            cur=cur->child[idx];
+        x->cnt += c;
+    }
+    // Erase number `n` from the trie
+    void erase(int n) {
+        node *cur = root;
+        for (int i = Log; i >= 0; i--) {
+            bool idx = (n >> i) & 1LL;
+            node *next = cur->mp[idx];
+            next->cnt--;
+            if (next->cnt == 0) {
+                delete next;
+                cur->mp[idx] = nullptr;
+                return;
+            }
+            cur = next;
         }
     }
-    void del(int n,int i,Node *cur)
-    {
-        if(i==-1)return;
-        bool idx=(n>>i)&1;
-        del(n,i-1,cur->child[idx]);
-        cur->frq[idx]--;
-        if(cur->frq[idx]==0)
-        {
-            delete cur->child[idx];
-            cur->child[idx]=0;
+    // Return whether number exists in the trie
+    bool contains(int num) {
+        node* x = root;
+        for (int i = Log; i >= 0; --i) {
+            bool b = (num >> i) & 1LL;
+            if (!x->mp[b] || x->mp[b]->cnt == 0) return false;
+            x = x->mp[b];
         }
+        return x->cnt > 0;
     }
-    int query(int n)
-    {
-        int ret=0;Node *cur=root;
-        for(int i=29;i>=0;i--)
-        {
-            bool idx=(n>>i)&1;
-            if(cur->child[idx^1]==0) cur=cur->child[idx];
-            else cur=cur->child[idx^1],ret|=(1<<i);
+
+    // Return the number in the trie that gives min xor with `num`
+    int min_xor(int num) {
+        if (root->cnt == 0) return -1;
+        node* x = root;
+        int ans = 0;
+        for (int i = Log; i >= 0; --i) {
+            bool b = (num >> i) & 1LL;
+            if (x->mp[b]) {
+                x = x->mp[b];
+            } else {
+                ans |= (1LL << i);
+                x = x->mp[(!b)];
+            }
         }
-        return ret;
+        return ans;
+    }
+
+    // Return the number in the trie that gives max xor with `num`
+    int max_xor(int num) {
+        if (root->cnt == 0) return -1;
+        node* x = root;
+        int ans = 0;
+        for (int i = Log; i >= 0; --i) {
+            bool b = ((num >> i) & 1LL) ^ 1LL;
+            if (x->mp[b]) {
+                ans |= (1LL << i);
+                x = x->mp[b];
+            } else {
+                x = x->mp[(!b)];
+            }
+        }
+        return ans;
+    }
+
+    void clear() {
+        clear(root);
+        root = new node;
     }
 };
