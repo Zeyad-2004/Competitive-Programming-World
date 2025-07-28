@@ -1,59 +1,91 @@
-struct Trie{
-    struct Node{
-        Node*child[26];
-        int IsEnd,Prefix;
-        Node(){
-            memset(child,0,sizeof child);
-            IsEnd=Prefix=0;
-        }
+class TrieString {
+    struct Node {
+        Node* child[26]{};
+        // unordered_map<char, Node*> child; // Uncomment this line to use unordered_map for flexibility
+
+        int wordCount = 0;
+        int prefixCount = 0;
+        char value = 'a';
+
+        Node() = default;
     };
-    Node*root=new Node();
-    void insert(string &s)
-    {
-        Node*cur=root;
-        for(auto it:s)
-        {
-            int idx=it-'a';
-            if(cur->child[idx]==0)
-            {
-                cur->child[idx]=new Node();
+
+    Node* root;
+
+public:
+    TrieString() : root(new Node()) {}
+
+    void insert(const string& s) {
+        Node* cur = root;
+        for (char ch : s) {
+            int idx = ch - cur->value;
+            if (!cur->child[idx]) cur->child[idx] = new Node();
+            cur = cur->child[idx];
+            cur->prefixCount++;
+        }
+        cur->wordCount++;
+    }
+
+    bool contains(const string& s) const {
+        Node* cur = root;
+        for (char ch : s) {
+            int idx = ch - cur->value;
+            if (!cur->child[idx]) return false;
+            cur = cur->child[idx];
+        }
+        return cur->wordCount > 0;
+    }
+
+    int countWord(const string& s) const {
+        Node* cur = root;
+        for (char ch : s) {
+            int idx = ch - cur->value;
+            if (!cur->child[idx]) return 0;
+            cur = cur->child[idx];
+        }
+        return cur->wordCount;
+    }
+
+    int countPrefix(const string& s) const {
+        Node* cur = root;
+        for (char ch : s) {
+            int idx = ch - cur->value;
+            if (!cur->child[idx]) return 0;
+            cur = cur->child[idx];
+        }
+        return cur->prefixCount;
+    }
+
+    void erase(const string& s) {
+        Node* cur = root;
+
+        for (char ch : s) {
+            int idx = ch - cur->value;
+            if (!cur->child[idx]) return;
+
+            Node *next = cur->child[idx];
+            next->prefixCount--;
+
+            if(next->prefixCount == 0){
+                delete next;
+                cur->child[idx] = nullptr;
+                return;
             }
-            cur=cur->child[idx];
-            cur->Prefix++;
+
+            cur = next;
         }
-        cur->IsEnd++;
+
+        if (cur->wordCount == 0) return; // word not present
+        cur->wordCount--;
     }
-    bool SearchWord(string &s)
-    {
-        Node*cur=root;
-        for(auto it:s)
-        {
-            int idx=it-'a';
-            if(cur->child[idx]==0)return 0;
-            cur=cur->child[idx];
-        }
-        return cur->IsEnd;
+
+    void clear(Node* node) {
+        if (!node) return;
+        for (Node* child : node->child) clear(child);
+        delete node;
     }
-    int CountWord(string &s)
-    {
-        Node*cur=root;
-        for(auto it:s)
-        {
-            int idx=it-'a';
-            if(cur->child[idx]==0)return 0;
-            cur=cur->child[idx];
-        }
-        return cur->IsEnd;
-    }
-    int CountPrefix(string &s)
-    {
-        Node*cur=root;
-        for(auto it:s)
-        {
-            int idx=it-'a';
-            if(cur->child[idx]==0)return 0;
-            cur=cur->child[idx];
-        }
-        return cur->Prefix;
-    }
+
+//    ~TrieString() {
+//        clear(root);
+//    }
 };
