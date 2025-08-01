@@ -85,7 +85,6 @@ public:
         delete node;
     }
 
-//    ~TrieString() {
-//        clear(root);
-//    }
+//    ~TrieString() clear(root);
+
 };
