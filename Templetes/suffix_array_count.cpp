@@ -6,42 +6,42 @@ class suffixArray {
         vector<int> c; // c[i] -> the class of the i-th smallest string (the class is the group)
         vector<int> lcp;
 
-    void countSort(vector<int> &p, vector<int> &c){
-        int n = p.size();
-    
-        vector<int> cnt(n);
-        for(auto &x: c){
-            cnt[x]++;
+        void countSort(vector<int> &p, vector<int> &c){
+            int n = p.size();
+        
+            vector<int> cnt(n);
+            for(auto &x: c){
+                cnt[x]++;
+            }
+        
+            vector<int> p_new(n), pos(n);
+            pos[0] = 0;
+            for(int i = 1; i < n; i++){
+                pos[i] = pos[i-1] + cnt[i-1];
+            }
+        
+            for(auto &x: p){
+                int i = c[x];
+                p_new[pos[i]] = x;
+                pos[i]++;
+            }
+        
+            p = p_new;
         }
+        void createLcp(){
+            lcp.resize(n);
+            int k = 0;
+            for(int i = 0; i < n-1; i++){
+                int pi = this->c[i];
+                int j = this->p[pi - 1];
     
-        vector<int> p_new(n), pos(n);
-        pos[0] = 0;
-        for(int i = 1; i < n; i++){
-            pos[i] = pos[i-1] + cnt[i-1];
-        }
+                // lcp[i] = lcp(s[i], s[j])
+                while(s[i + k] == s[j + k]) k++;
     
-        for(auto &x: p){
-            int i = c[x];
-            p_new[pos[i]] = x;
-            pos[i]++;
+                lcp[pi] = k;
+                k = max(k - 1, (int)0);
+            }
         }
-    
-        p = p_new;
-    }
-    void createLcp(){
-        lcp.resize(n);
-        int k = 0;
-        for(int i = 0; i < n-1; i++){
-            int pi = this->c[i];
-            int j = this->p[pi - 1];
- 
-            // lcp[i] = lcp(s[i], s[j])
-            while(s[i + k] == s[j + k]) k++;
- 
-            lcp[pi] = k;
-            k = max(k - 1, (int)0);
-        }
-    }
     public:
         explicit suffixArray(string &str) : s(str) {
             s += ' ';

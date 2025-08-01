@@ -34,17 +34,6 @@ inline long long modDivide(long long a, long long b) {
     return modMul(a, modInverse(b));
 }
 
-int preprocess = []() {
-    fact[0] = invFact[0] = 1;
-    for (int i = 1; i < MAX; i++) {
-        fact[i] = modMul(fact[i - 1], i);
-    }
-    invFact[MAX - 1] = modInverse(fact[MAX - 1]);
-    for (int i = MAX - 2; i >= 1; i--) {
-        invFact[i] = modMul(invFact[i + 1], i + 1);
-    }
-    return 0;
-}();
 
 inline long long nCr(int n, int r) {
     if (r > n || r < 0) return 0;
@@ -59,3 +48,15 @@ inline long long nPr(int n, int r) {
 inline long long catalanNumber(int n){
     return nCr(2 * n, n) / (n + 1);
 }
+
+int preprocess = []() {
+    fact[0] = invFact[0] = 1;
+    for (int i = 1; i < MAX; i++) {
+        fact[i] = modMul(fact[i - 1], i);
+    }
+    invFact[MAX - 1] = modInverse(fact[MAX - 1]);
+    for (int i = MAX - 2; i >= 1; i--) {
+        invFact[i] = modMul(invFact[i + 1], i + 1);
+    }
+    return 0;
+}();

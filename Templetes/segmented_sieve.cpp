@@ -1,3 +1,4 @@
+
 const int N = 1e8;
 const int prime_count_estimate = 6e6; // ~N/ln(N) for N=1e8
 vector<int> primes(prime_count_estimate);
@@ -19,4 +20,27 @@ void fast_sieve() {
         }
     }
     primes.resize(now); // Trim to actual size
+}
+
+vector<ll> segmented_sieve(ll L, ll R) {
+    vector<char> is_prime_range(R - L + 1, 1); // Assume all numbers in range are prime
+
+    if (L == 1) is_prime_range[0] = 0; // 1 is not a prime
+
+    for (int p : primes) {
+        if (1LL * p * p > R) break;
+
+        // First multiple of p >= L
+        ll start = max(p * p, ((L + p - 1) / p) * p);
+
+        for (ll j = start; j <= R; j += p)
+            is_prime_range[j - L] = 0;
+    }
+
+    vector<ll> seg_primes;
+    for (ll i = L; i <= R; ++i)
+        if (is_prime_range[i - L])
+            seg_primes.push_back(i);
+
+    return seg_primes;
 }

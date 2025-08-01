@@ -58,18 +58,18 @@ struct segmentTree{
         set(i, v, 0, 0, size);
     }
 
-    long long mn(int l, int r, int x, int lx, int rx){
+    long long get(int l, int r, int x, int lx, int rx){
         if(l >= rx || lx >= r) return NEUTRAL_ELEMENT;
         if(lx >= l && rx <= r) return values[x];
 
         int mid = (rx + lx) / 2;
-        long long a = mn(l, r, 2 * x + 1, lx, mid);
-        long long b = mn(l, r, 2 * x + 2, mid, rx);
+        long long a = get(l, r, 2 * x + 1, lx, mid);
+        long long b = get(l, r, 2 * x + 2, mid, rx);
 
         return baseOperation(a, b);
     }
-    long long mn(int l, int r){
-        return mn(l, r, 0, 0, size);
+    long long get(int l, int r){
+        return get(l, r, 0, 0, size);
     }
 
     void setRange(int l, int r, int v, int x, int lx, int rx){

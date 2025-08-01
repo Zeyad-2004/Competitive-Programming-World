@@ -17,7 +17,7 @@ int fastPower(int base, int power) {
     if (power % 2) ret = mul(ret, base);
     return ret;
 }
-void pre() {
+int pre = []() {
     pw1[0] = inv1[0] = pw2[0] = inv2[0] = 1;
     int mulInv1 = fastPower(P1, M - 2);
     int mulInv2 = fastPower(P2, M - 2);
@@ -27,7 +27,9 @@ void pre() {
         inv1[i] = mul(inv1[i - 1], mulInv1);
         inv2[i] = mul(inv2[i - 1], mulInv2);
     }
-}
+    return 0;
+}();
+
 struct Hash {
     vector<pair<int, int>> prefixHash;
     Hash(string s) {
