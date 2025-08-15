@@ -15,6 +15,8 @@ using namespace std;
  boundary_point in vector = gcd(|x2-x1|, |y2-y1|) + 1
  line have infinity point, segment have to end points
  vector(x, y) perpendicular to vector(-y, x) and (y, -x)
+
+ theta in radians / pi = theta in degrees / 180
 */
 
 using ll = int64_t;
